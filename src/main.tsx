@@ -8,5 +8,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Toaster position='top-center' expand={true} richColors />
     <App />
-  </React.StrictMode>,
+  </React.StrictMode>
 )

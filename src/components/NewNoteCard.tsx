@@ -3,40 +3,39 @@ import { X } from 'lucide-react'
 import { ChangeEvent, FormEvent, useState } from 'react'
 import { toast } from 'sonner'
 
-interface NotesType {
-  id: string
-  date: Date
-  content: string
+interface NewNoteCardProps {
+  createNewNote: (content: string) => void
 }
 
-export function NewNoteCard() {
-  const [notes, setNotes] = useState<NotesType[]>([])
-  const [shouldShowDashboard, setShouldShowDashboard] = useState(true)
+export function NewNoteCard({ createNewNote }: NewNoteCardProps) {
+  const [shouldShowOnboard, setShouldShowOnboard] = useState(true)
   const [content, setContent] = useState('')
 
   function handleShowDashboard() {
-    setShouldShowDashboard(false)
+    setShouldShowOnboard(false)
   }
 
   function handleTextareaValue(event: ChangeEvent<HTMLTextAreaElement>) {
     if (event.target.value === '') {
-      setShouldShowDashboard(true)
+      setShouldShowOnboard(true)
     }
 
     setContent(event.target.value)
   }
 
-  function createNewNote(event: FormEvent) {
+  function handleCreateNewNote(event: FormEvent) {
     event.preventDefault()
 
-    setNotes([{ id: crypto.randomUUID(), date: new Date, content}, ...notes])
+    if(content === '') {
+      return toast.error('Por favor, escreva sua anotação')
+    }
+
+    createNewNote(content)
     setContent('')
-    setShouldShowDashboard(true)
+    setShouldShowOnboard(true)
 
     toast.success('Anotação criada com sucesso!')
   }
-
-  console.log(notes)
 
   return (
     <Dialog.Root>
@@ -56,12 +55,12 @@ export function NewNoteCard() {
             <X className='size-5' />
           </Dialog.Close>
           
-          <form className='flex flex-1 flex-col' onSubmit={createNewNote}>
+          <form className='flex flex-1 flex-col' onSubmit={handleCreateNewNote}>
             <div className='flex flex-1 flex-col gap-3 p-5'>
               <span className='text-sm font-medium text-slate-300'>
                 Adicionar nota
               </span>
-              {shouldShowDashboard ? 
+              {shouldShowOnboard ? 
                 <p className='text-sm leading-6 text-slate-400'>
                   Comece <button className='text-lime-400 font-semibold hover:underline'>gravando sua nota</button> em áudio ou se preferir <button onClick={handleShowDashboard} className='text-lime-400 font-semibold hover:underline'>utilize apenas texto</button>
                 </p>
@@ -76,7 +75,7 @@ export function NewNoteCard() {
             </div>
 
             <button 
-              disabled={shouldShowDashboard} 
+              disabled={shouldShowOnboard} 
               type='submit' 
               className='w-full bg-lime-400 py-4 font-semibold text-center text-sm text-lime-950 outline-none hover:enabled:bg-lime-500 disabled:cursor-not-allowed'
             >
