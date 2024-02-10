@@ -43,11 +43,14 @@ export function App() {
   const filteredNotesArray = filter !== '' ? notes.filter(note => note.content.toLowerCase().includes(filter.toLowerCase())) : notes
 
   function handleDeleteNote(id: string) {
-    
+    const notesWithoutTheDeletedOne = notes.filter( note => { return note.id !== id })
+    setNotes(notesWithoutTheDeletedOne)
+
+    localStorage.setItem('notes@1.0.0', JSON.stringify(notesWithoutTheDeletedOne))
   }
 
   return (
-    <div className='mx-auto max-w-6xl my-12 space-y-6'>
+    <div className='mx-auto max-w-6xl my-12 space-y-6 px-5'>
       <img src={logo} alt="NLW Expert" />
       
       <form className='w-full'>
@@ -61,7 +64,7 @@ export function App() {
 
       <div className='h-px bg-slate-700' />
 
-      <div className='grid grid-cols-3 auto-rows-[250px] gap-6'>
+      <div className='grid auto-rows-[250px] gap-6 lg:grid-cols-3 md:grid-cols-2'>
         <NewNoteCard createNewNote={createNewNote} />
 
         {filteredNotesArray.map( note => {
